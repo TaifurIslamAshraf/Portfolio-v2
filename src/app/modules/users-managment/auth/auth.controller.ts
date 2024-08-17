@@ -7,7 +7,7 @@ import { createJwtToken, verifyJwtToken } from "../../../helpers/jwtHelper";
 import { extractTokenFromHeader } from "../../../middlewares/authGuard";
 import catchAsync from "../../../middlewares/catchAsync";
 import sendResponse from "../../../utilities/sendResponse";
-import { IUserSubset } from "./auth.interface";
+import { IRoleUopdate, IUserSubset } from "./auth.interface";
 import { authServices } from "./auth.service";
 import { tokenUtils } from "./auth.utils";
 
@@ -134,6 +134,18 @@ const updatePassword = catchAsync(async (req, res) => {
   });
 });
 
+const updateUserRole = catchAsync(async (req, res) => {
+  const { userId, role } = req.body as IRoleUopdate;
+
+  const result = await authServices.userRoleService({ userId, role });
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    message: "User role update successfully",
+    data: result,
+  });
+});
+
 //forgot password
 const forgotPassword = catchAsync(async (req, res) => {
   const { email } = req.body;
@@ -192,4 +204,5 @@ export const authControllers = {
   forgotPassword,
   forgotPasswordLinkValidation,
   resetPassword,
+  updateUserRole,
 };

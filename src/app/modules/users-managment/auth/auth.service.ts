@@ -8,7 +8,7 @@ import { createJwtToken, verifyJwtToken } from "../../../helpers/jwtHelper";
 import { sendMail } from "../../../helpers/sendMail";
 import { IUser } from "../user/user.interface";
 import User from "../user/user.model";
-import { ILogin, IUserSubset } from "./auth.interface";
+import { ILogin, IRoleUopdate, IUserSubset } from "./auth.interface";
 
 const createUserIntodb = async (payload: IUserSubset) => {
   const isEmailExist = await User.exists({ email: payload.email });
@@ -71,6 +71,19 @@ const updatePasswordIntodb = async (
   }
 
   await user?.save();
+};
+
+const userRoleService = async ({ userId, role }: IRoleUopdate) => {
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, "User not found");
+  }
+
+  user.role = role;
+
+  await user.save();
+
+  return user;
 };
 
 //forgot password service
@@ -144,4 +157,5 @@ export const authServices = {
   updatePasswordIntodb,
   forgotPasswordService,
   resetPasswordService,
+  userRoleService,
 };

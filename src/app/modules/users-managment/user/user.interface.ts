@@ -22,3 +22,5 @@ export interface IUser extends Document {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export type IUserUpdate = Pick<IUser, "name" | "email" | "profile">;

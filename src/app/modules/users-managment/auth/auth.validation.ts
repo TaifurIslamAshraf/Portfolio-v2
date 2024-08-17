@@ -21,4 +21,38 @@ const loginUser = z.object({
   }),
 });
 
-export const authZodSchema = { createUser, loginUser };
+const updatePassword = z.object({
+  body: z.object({
+    oldPassword: z
+      .string({ required_error: "Old Password required" })
+      .min(6, "Password should be at least 6 characters"),
+    newPassword: z
+      .string({ required_error: "New Password required" })
+      .min(6, "Password should be at least 6 characters"),
+  }),
+});
+
+const resetPassword = z.object({
+  body: z.object({
+    newPassword: z
+      .string({ required_error: "New Password required" })
+      .min(6, "Password should be at least 6 characters"),
+    token: z.string({ required_error: "Token is required" }),
+    userId: z.string({ required_error: "User id is required" }),
+  }),
+});
+
+const updateUserRole = z.object({
+  body: z.object({
+    userId: z.string({ required_error: "User Id is required" }),
+    role: z.enum(["admin", "user"]),
+  }),
+});
+
+export const authZodSchema = {
+  createUser,
+  loginUser,
+  updatePassword,
+  resetPassword,
+  updateUserRole,
+};
