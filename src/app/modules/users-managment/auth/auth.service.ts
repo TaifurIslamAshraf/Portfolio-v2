@@ -1,6 +1,11 @@
+import ejs from "ejs";
 import httpStatus from "http-status";
 import { isValidObjectId } from "mongoose";
+import path from "path";
+import config from "../../../config/config";
 import ApiError from "../../../errorHandlers/ApiError";
+import { createJwtToken, verifyJwtToken } from "../../../helpers/jwtHelper";
+import { sendMail } from "../../../helpers/sendMail";
 import { IUser } from "../user/user.interface";
 import User from "../user/user.model";
 import { ILogin, IUserSubset } from "./auth.interface";
@@ -68,9 +73,75 @@ const updatePasswordIntodb = async (
   await user?.save();
 };
 
+//forgot password service
+const forgotPasswordService = async (email: string) => {
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    throw new ApiError(
+      httpStatus.UNAUTHORIZED,
+      "You dont have account with this email"
+    );
+  }
+
+  const userId = user._id;
+
+  const serverUrl = config.domains.serverSideURL;
+
+  const forgotPasswordToken = createJwtToken(
+    { _id: userId },
+    config.security.forgotPasswordTokenSecret!,
+    config.jwtExpires.forgotPasswordTokenExpire!
+  );
+
+  const forgotPasswordLink = `${serverUrl}/api/v1/auth/forgot-password-link-validation/${userId}/${forgotPasswordToken}`;
+
+  await ejs.renderFile(path.join(__dirname, "../../../views/forgotMail.ejs"), {
+    forgotPasswordLink,
+  });
+
+  await sendMail({
+    email: email,
+    subject: "Reset Your MyShop password",
+    templete: "forgotMail.ejs",
+    data: { forgotPasswordLink },
+  });
+};
+
+//reset password service
+const resetPasswordService = async (payload: {
+  newPassword: string;
+  token: string;
+  userId: string;
+}) => {
+  const user = await User.findById(payload.userId).select("+password");
+  if (!user) {
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      "You dont have account with this email"
+    );
+  }
+
+  const decoded = verifyJwtToken(
+    payload.token,
+    config.security.forgotPasswordTokenSecret!
+  );
+  if (!decoded) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "Invalid Reset password link");
+  }
+
+  if (user?.password) {
+    user.password = payload.newPassword;
+  }
+
+  await user?.save();
+};
+
 export const authServices = {
   createUserIntodb,
   loginService,
   userFindById,
   updatePasswordIntodb,
+  forgotPasswordService,
+  resetPasswordService,
 };

@@ -1,5 +1,6 @@
 import httpStatus from "http-status";
 import { JwtPayload } from "jsonwebtoken";
+import mongoose from "mongoose";
 import config from "../../../config/config";
 import ApiError from "../../../errorHandlers/ApiError";
 import { createJwtToken, verifyJwtToken } from "../../../helpers/jwtHelper";
@@ -133,10 +134,62 @@ const updatePassword = catchAsync(async (req, res) => {
   });
 });
 
+//forgot password
+const forgotPassword = catchAsync(async (req, res) => {
+  const { email } = req.body;
+  if (!email) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "Email is required");
+  }
+
+  await authServices.forgotPasswordService(email);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    message: "Check you email",
+  });
+});
+
+const forgotPasswordLinkValidation = catchAsync(async (req, res) => {
+  const { userId, token } = req.params;
+  if (!userId || !token) {
+    res.status(400).send("<h1>Invalid Link. try again</h1>");
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    res.status(400).send("<h1>Invalid Link. try again</h1>");
+  }
+
+  const decoded = verifyJwtToken(
+    token,
+    config.security.forgotPasswordTokenSecret!
+  );
+  if (!decoded) {
+    res.status(400).send("<h1>Invalid Link. try again</h1>");
+  }
+
+  res.redirect(
+    `${config.domains.clientSideURL}/resetPassword/${userId}/${token}`
+  );
+});
+
+const resetPassword = catchAsync(async (req, res) => {
+  const { newPassword, token, userId } = req.body;
+
+  await authServices.resetPasswordService({ newPassword, token, userId });
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    message: "Reset password successfully. please login",
+  });
+});
+
 export const authControllers = {
   createUser,
   loginUser,
   logout,
   updateAccessToken,
   updatePassword,
+  forgotPassword,
+  forgotPasswordLinkValidation,
+  resetPassword,
 };

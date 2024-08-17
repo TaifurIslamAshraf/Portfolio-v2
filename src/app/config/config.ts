@@ -14,6 +14,7 @@ const config = {
   },
   domains: {
     clientSideURL: env.CLIENT_SIDE_URL || "http://localhost:3000",
+    serverSideURL: env.SERVER_URL || "http://localhost:4000",
   },
   security: {
     refreshTokenSecret: env.REFRESH_TOKEN_SECRET || "58439434343uy94334435748",
