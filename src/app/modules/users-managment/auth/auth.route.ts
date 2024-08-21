@@ -18,9 +18,9 @@ authRoutes.post(
   authControllers.loginUser
 );
 
-authRoutes.get("/logout", isAuthenticated, authControllers.logout);
+authRoutes.get("/logout", authControllers.logout);
 
-authRoutes.post("/refresh", isAuthenticated, authControllers.updateAccessToken);
+authRoutes.post("/refresh", authControllers.updateAccessToken);
 
 authRoutes.put(
   "/update-password",
