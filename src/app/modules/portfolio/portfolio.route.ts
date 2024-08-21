@@ -11,4 +11,18 @@ projectRoutes.get(
   portfolioControllers.getAllProjects
 );
 
+projectRoutes.get("/single-project/:id", portfolioControllers.getSingleProject);
+projectRoutes.post(
+  "/create-project",
+  validateRequest(portfolioZodSchema.createProject),
+  portfolioControllers.createProject
+);
+projectRoutes.put(
+  "/update-project/:id",
+  validateRequest(portfolioZodSchema.updateProject),
+  portfolioControllers.updateProject
+);
+
+projectRoutes.delete("/delete-project/:id", portfolioControllers.deleteProject);
+
 export default projectRoutes;

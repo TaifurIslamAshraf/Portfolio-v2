@@ -1,6 +1,7 @@
 import httpStatus from "http-status";
 import catchAsync from "../../middlewares/catchAsync";
 import sendResponse from "../../utilities/sendResponse";
+import { ICreateProjectInput, IUpdateProject } from "./portfolio.interface";
 import { portfolioServices } from "./portfolio.service";
 
 const getAllProjects = catchAsync(async (req, res) => {
@@ -30,4 +31,61 @@ const getAllProjects = catchAsync(async (req, res) => {
   });
 });
 
-export const portfolioControllers = { getAllProjects };
+const getSingleProject = catchAsync(async (req, res) => {
+  const { id } = req.params;
+
+  const result = await portfolioServices.projectFindById(id);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "project retrive success",
+    data: result,
+  });
+});
+
+const createProject = catchAsync(async (req, res) => {
+  const projectData = req.body as ICreateProjectInput;
+
+  await portfolioServices.createProjectIntodb(projectData);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "project create successfull",
+  });
+});
+
+const updateProject = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const updatedData = req.body as IUpdateProject;
+
+  const result = await portfolioServices.updateProjectIntodb(updatedData, id);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "project update successfull",
+    data: result,
+  });
+});
+
+const deleteProject = catchAsync(async (req, res) => {
+  const { id } = req.params;
+
+  await portfolioServices.deleteProjectFromdb(id);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "project delete successfull",
+  });
+});
+
+export const portfolioControllers = {
+  getAllProjects,
+  getSingleProject,
+  createProject,
+  updateProject,
+  deleteProject,
+};

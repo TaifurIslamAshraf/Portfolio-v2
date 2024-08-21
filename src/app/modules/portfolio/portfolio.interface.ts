@@ -30,6 +30,9 @@ export interface IProject extends Document {
   version?: string;
   lastUpdated: Date;
 }
+export type ICreateProjectInput = Omit<IProject, keyof Document>;
+
+export type IUpdateProject = Partial<Omit<IProject, keyof Document>>;
 
 export type IFilter = {
   status?: string;
