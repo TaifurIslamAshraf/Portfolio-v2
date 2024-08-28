@@ -14,17 +14,17 @@ const projectSchema = new Schema<IProject>({
     type: String,
     required: true,
   },
-  tags: { type: [String], required: true },
-  teamSize: { type: Number, required: true },
+  tags: { type: [String] },
+  teamSize: { type: Number },
   role: { type: String, required: true },
   challenges: { type: [String], required: true },
   solutions: { type: [String], required: true },
   features: { type: [String], required: true },
   testimonials: [
     {
-      name: { type: String, required: true },
-      role: { type: String, required: true },
-      comment: { type: String, required: true },
+      name: { type: String },
+      role: { type: String },
+      comment: { type: String },
     },
   ],
   metrics: {

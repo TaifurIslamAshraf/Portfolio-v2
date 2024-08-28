@@ -10,7 +10,7 @@ const app: Application = express();
 middlewares(app);
 
 // test endpint
-app.use("/api/v1", (_, res: Response) => {
+app.use("/", (_, res: Response) => {
   res.status(200).json({
     success: true,
     message: "Server Working !",

@@ -10,8 +10,8 @@ export interface IProject extends Document {
   startDate: Date;
   endDate?: Date;
   category: string;
-  tags: string[];
-  teamSize: number;
+  tags?: string[];
+  teamSize?: number;
   role: string;
   challenges: string[];
   solutions: string[];

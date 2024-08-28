@@ -16,22 +16,23 @@ export const createProject = z.object({
     githubUrl: z.string().optional(),
     liveUrl: z.string().optional(),
     imageUrls: z.array(z.string()).min(1, "At least one image URL is required"),
-    startDate: z.date({
+    startDate: z.string({
       required_error: "Project start date is required",
       invalid_type_error: "Project start date must be a valid date",
     }),
-    endDate: z.date().optional(),
+    endDate: z.string().optional(),
     category: z.string({
       required_error: "Project category is required",
       invalid_type_error: "Project category must be a string",
     }),
-    tags: z.array(z.string()).min(1, "At least one tag is required"),
+    tags: z.array(z.string()).min(1, "At least one tag is required").optional(),
     teamSize: z
       .number({
         required_error: "Project team size is required",
         invalid_type_error: "Project team size must be a number",
       })
-      .positive("Team size must be a positive number"),
+      .positive("Team size must be a positive number")
+      .optional(),
     role: z.string({
       required_error: "Project role is required",
       invalid_type_error: "Project role must be a string",
@@ -45,26 +46,19 @@ export const createProject = z.object({
     testimonials: z
       .array(
         z.object({
-          name: z.string({
-            required_error: "Testimonial name is required",
-            invalid_type_error: "Testimonial name must be a string",
-          }),
-          role: z.string({
-            required_error: "Testimonial role is required",
-            invalid_type_error: "Testimonial role must be a string",
-          }),
-          comment: z.string({
-            required_error: "Testimonial comment is required",
-            invalid_type_error: "Testimonial comment must be a string",
-          }),
+          name: z.string({}).optional(),
+          role: z.string({}).optional(),
+          comment: z.string({}).optional(),
         })
       )
-      .min(1, "At least one testimonial is required"),
-    metrics: z.object({
-      users: z.number().optional(),
-      downloads: z.number().optional(),
-      revenue: z.number().optional(),
-    }),
+      .optional(),
+    metrics: z
+      .object({
+        users: z.number().optional(),
+        downloads: z.number().optional(),
+        revenue: z.number().optional(),
+      })
+      .optional(),
     status: z.enum(["In Progress", "Completed", "On Hold"], {
       required_error: "Project status is required",
     }),
