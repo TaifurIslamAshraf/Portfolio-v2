@@ -5,8 +5,16 @@ const projectSchema = new Schema<IProject>({
   title: { type: String, required: true },
   description: { type: String, required: true },
   technologies: { type: [String], required: true },
-  githubUrl: { type: String },
-  liveUrl: { type: String },
+  githubUrl: {
+    dashboard: { type: String },
+    client: { type: String },
+    server: { type: String },
+  },
+  liveUrl: {
+    dashboard: { type: String },
+    client: { type: String },
+    server: { type: String },
+  },
   imageUrls: { type: [String], required: true },
   startDate: { type: Date, required: true },
   endDate: { type: Date },

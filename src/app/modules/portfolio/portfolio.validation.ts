@@ -13,8 +13,28 @@ export const createProject = z.object({
     technologies: z
       .array(z.string())
       .min(1, "At least one technology is required"),
-    githubUrl: z.string().optional(),
-    liveUrl: z.string().optional(),
+    githubUrl: z
+      .object({
+        dashboard: z.string().optional(),
+        client: z.string().optional(),
+        server: z.string().optional(),
+      })
+      .refine(
+        (data) => Object.values(data).some((value) => value !== undefined),
+        { message: "At least one GitHub URL field is required" }
+      )
+      .optional(),
+    liveUrl: z
+      .object({
+        dashboard: z.string().optional(),
+        client: z.string().optional(),
+        server: z.string().optional(),
+      })
+      .refine(
+        (data) => Object.values(data).some((value) => value !== undefined),
+        { message: "At least one live URL field is required" }
+      )
+      .optional(),
     imageUrls: z.array(z.string()).min(1, "At least one image URL is required"),
     startDate: z.string({
       required_error: "Project start date is required",
@@ -71,8 +91,20 @@ export const updateProject = z.object({
     title: z.string().optional(),
     description: z.string().optional(),
     technologies: z.array(z.string()).min(1).optional(),
-    githubUrl: z.string().optional(),
-    liveUrl: z.string().optional(),
+    githubUrl: z
+      .object({
+        dashboard: z.string().optional(),
+        client: z.string().optional(),
+        server: z.string().optional(),
+      })
+      .optional(),
+    liveUrl: z
+      .object({
+        dashboard: z.string().optional(),
+        client: z.string().optional(),
+        server: z.string().optional(),
+      })
+      .optional(),
     imageUrls: z.array(z.string()).min(1).optional(),
     startDate: z.date().optional(),
     endDate: z.date().optional(),

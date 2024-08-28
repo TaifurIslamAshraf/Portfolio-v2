@@ -4,8 +4,16 @@ export interface IProject extends Document {
   title: string;
   description: string;
   technologies: string[];
-  githubUrl?: string;
-  liveUrl?: string;
+  githubUrl?: {
+    dashboard: string;
+    client: string;
+    server: string;
+  };
+  liveUrl?: {
+    dashboard: string;
+    client: string;
+    server: string;
+  };
   imageUrls: string[];
   startDate: Date;
   endDate?: Date;
