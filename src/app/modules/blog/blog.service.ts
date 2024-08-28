@@ -54,6 +54,27 @@ const updateBlogIntodb = async (
   return result!;
 };
 
+const updateBlogStatusIntodb = async (
+  payload: { isPublished: boolean },
+  id: string
+): Promise<IBlog> => {
+  if (!Types.ObjectId.isValid(id)) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "Blog id is invalid");
+  }
+
+  // Perform the update
+  const result = await BlogModel.findByIdAndUpdate(
+    id,
+    { isPublished: payload, publishedAt: Date.now() },
+    {
+      runValidators: true,
+      new: true,
+    }
+  );
+
+  return result!;
+};
+
 const deleteBlogFromdb = async (id: string) => {
   if (!Types.ObjectId.isValid(id)) {
     throw new ApiError(httpStatus.BAD_REQUEST, "Blog id is invalid");
@@ -71,4 +92,5 @@ export const blogServices = {
   createBlogIntodb,
   updateBlogIntodb,
   deleteBlogFromdb,
+  updateBlogStatusIntodb,
 };

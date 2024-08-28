@@ -5,13 +5,10 @@ import { ICreateBlogInput, IUpdateBlog } from "./blog.interface";
 import { blogServices } from "./blog.service";
 
 const getAllBlogs = catchAsync(async (req, res) => {
-  const { author, tags, isPublished } = req.query;
+  const { tags, isPublished } = req.query;
   const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 10;
   const filter: Record<string, unknown> = {};
 
-  if (author) {
-    filter.author = author;
-  }
   if (tags) {
     filter.tags = { $in: tags };
   }
@@ -43,9 +40,13 @@ const getSingleBlog = catchAsync(async (req, res) => {
 });
 
 const createBlog = catchAsync(async (req, res) => {
+  const userId = res.locals?.user?._id;
   const blogData = req.body as ICreateBlogInput;
-
-  await blogServices.createBlogIntodb(blogData);
+  const payload: ICreateBlogInput = {
+    ...blogData,
+    author: userId,
+  };
+  await blogServices.createBlogIntodb(payload);
 
   sendResponse(res, {
     success: true,
@@ -59,6 +60,20 @@ const updateBlog = catchAsync(async (req, res) => {
   const updatedData = req.body as IUpdateBlog;
 
   const result = await blogServices.updateBlogIntodb(updatedData, id);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "Blog updated successfully",
+    data: result,
+  });
+});
+
+const updateBlogStatus = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const { isPublished } = req.body;
+
+  const result = await blogServices.updateBlogStatusIntodb(isPublished, id);
 
   sendResponse(res, {
     success: true,
@@ -86,4 +101,5 @@ export const blogControllers = {
   createBlog,
   updateBlog,
   deleteBlog,
+  updateBlogStatus,
 };

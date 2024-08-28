@@ -3,18 +3,10 @@ import { z } from "zod";
 const baseSchema = z.object({
   title: z.string().min(1, "Title is required"),
   content: z.string().min(1, "Content is required"),
-  author: z.string().min(1, "Author is required"),
   tags: z.array(z.string()).min(1, "At least one tag is required"),
-  category: z.string().min(1, "Category is required"),
-  excerpt: z.string().min(1, "Excerpt is required"),
-  featuredImage: z.string().url("Featured image must be a valid URL"),
-  readTime: z.number().positive("Read time must be a positive number"),
-  seoMetadata: z.object({
-    metaTitle: z.string().min(1, "Meta title is required"),
-    metaDescription: z.string().min(1, "Meta description is required"),
-    keywords: z.array(z.string()).min(1, "At least one keyword is required"),
-  }),
-  status: z.enum(["Draft", "Published", "Archived"]),
+  image: z.string().url("Featured image must be a valid URL"),
+  isPublished: z.boolean(),
+  publishedAt: z.date().optional(),
 });
 
 export const createBlog = z.object({
@@ -43,8 +35,10 @@ export const getBlogs = z.object({
   }),
 });
 
+export const updateBlogStatus = z.object({});
 export const blogZodSchema = {
   createBlog,
   updateBlog,
   getBlogs,
+  updateBlogStatus,
 };

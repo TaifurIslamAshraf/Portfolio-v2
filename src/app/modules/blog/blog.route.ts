@@ -6,11 +6,7 @@ import { blogZodSchema } from "./blog.validation";
 
 const blogRoutes = Router();
 
-blogRoutes.get(
-  "/all-blogs",
-  validateRequest(blogZodSchema.getBlogs),
-  blogControllers.getAllBlogs
-);
+blogRoutes.get("/all-blogs", blogControllers.getAllBlogs);
 
 blogRoutes.get("/single-blog/:id", blogControllers.getSingleBlog);
 
@@ -28,6 +24,14 @@ blogRoutes.put(
   authorizeUser("admin"),
   validateRequest(blogZodSchema.updateBlog),
   blogControllers.updateBlog
+);
+
+blogRoutes.put(
+  "/update-blog-status/:id",
+  isAuthenticated,
+  authorizeUser("admin"),
+  validateRequest(blogZodSchema.updateBlogStatus),
+  blogControllers.updateBlogStatus
 );
 
 blogRoutes.delete(

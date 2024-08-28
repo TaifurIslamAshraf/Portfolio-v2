@@ -4,7 +4,12 @@ import { IBlog } from "./blog.interface";
 const BlogSchema = new Schema<IBlog>({
   title: { type: String, required: true },
   content: { type: String, required: true },
-  author: { type: String, required: true },
+  author: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  image: { type: String, required: true },
   tags: { type: [String], default: [] },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
