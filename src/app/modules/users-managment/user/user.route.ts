@@ -9,7 +9,7 @@ userRoutes.get(
   "/all-users",
   isAuthenticated,
   authorizeUser("admin"),
-  userControllers.getUserInfo
+  userControllers.getAllUsers
 );
 userRoutes.put(
   "/update-user",
