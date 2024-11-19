@@ -15,6 +15,10 @@
     "prepare": "husky install",
     "update": "pnpm update"
   },
+  "lint-staged": {
+    "*.{ts,json,md}": "prettier --write",
+    "src/**/*.ts": "eslint"
+  },
   "keywords": [],
   "author": "",
   "license": "MIT",
