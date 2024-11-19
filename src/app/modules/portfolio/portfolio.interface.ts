@@ -34,11 +34,11 @@ export interface IProject extends Document {
     downloads?: number;
     revenue?: number;
   };
-  status: "In Progress" | "Completed" | "On Hold";
+  status: "In Progress" | "Completed" | "On Hold" | "Draft";
   version?: string;
   lastUpdated: Date;
 }
-export type ICreateProjectInput = Omit<IProject, keyof Document>;
+export type ICreateProjectInput = Pick<IProject, "title">;
 
 export type IUpdateProject = Partial<Omit<IProject, keyof Document>>;
 

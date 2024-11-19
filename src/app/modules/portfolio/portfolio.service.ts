@@ -5,7 +5,6 @@ import ApiError from "../../errorHandlers/ApiError";
 import {
   ICreateProjectInput,
   IFilter,
-  IProject,
   IUpdateProject,
 } from "./portfolio.interface";
 import ProjectModel from "./portfolio.model";
@@ -13,12 +12,12 @@ import ProjectModel from "./portfolio.model";
 const findAllProjects = async (
   filter: IFilter,
   limit = 10
-): Promise<IProject[]> => {
+): Promise<IUpdateProject[]> => {
   const projects = await ProjectModel.find(filter).limit(limit);
   return projects;
 };
 
-const projectFindById = async (id: string): Promise<IProject> => {
+const projectFindById = async (id: string): Promise<IUpdateProject> => {
   if (!Types.ObjectId.isValid(id)) {
     throw new ApiError(httpStatus.BAD_REQUEST, "Project id is invalid");
   }
@@ -36,7 +35,7 @@ const createProjectIntodb = async (payload: ICreateProjectInput) => {
 const updateProjectIntodb = async (
   payload: IUpdateProject,
   id: string
-): Promise<IProject> => {
+): Promise<IUpdateProject> => {
   if (!Types.ObjectId.isValid(id)) {
     throw new ApiError(httpStatus.BAD_REQUEST, "Project id is invalid");
   }
